@@ -1,6 +1,9 @@
 {
   "id": "golarion",
-  "name": "Голарион",
+  "name": {
+    "en": "Golarion",
+    "ru": "Голарион"
+  },
   "schema": 1,
   "worldRadiusKm": 6371,
   "grid": {
