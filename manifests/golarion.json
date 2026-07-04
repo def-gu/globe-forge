@@ -22,6 +22,11 @@
       "url": "https://storage.yandexcloud.net/globe-golarion/golarion.pmtiles"
     }
   ],
+  "popups": {
+    "path": "assets/extra/{slice}.json",
+    "slices": 10,
+    "layers": ["location-icons", "location-labels"]
+  },
   "view": {
     "center": [35, -7],
     "zoom": 4.5
