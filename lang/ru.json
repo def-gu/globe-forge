@@ -13,6 +13,7 @@
     "BackdropPlaceholder": "CSS-фон: url(...) center/cover или градиент",
     "BackdropHint": "Что видно вокруг сферы. Пусто — космос по умолчанию.",
     "OpenJournal": "Открыть журнал",
-    "CreateJournal": "Создать журнал"
+    "CreateJournal": "Создать журнал",
+    "UnnamedPlace": "Безымянное место"
   }
 }
