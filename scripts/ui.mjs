@@ -1,4 +1,4 @@
-import { allManifests, manifestsReady } from "./manifests.mjs";
+import { allManifests, manifestName, manifestsReady } from "./manifests.mjs";
 
 const MODULE = "globe-forge";
 
@@ -28,7 +28,7 @@ async function createGlobeDialog() {
     return;
   }
   const options = manifests
-    .map((m) => `<option value="${m.id}">${m.name}</option>`)
+    .map((m) => `<option value="${m.id}">${manifestName(m)}</option>`)
     .join("");
   const content = `
     <div class="form-group">
@@ -37,7 +37,7 @@ async function createGlobeDialog() {
     </div>
     <div class="form-group">
       <label>${game.i18n.localize("GLOBEFORGE.SceneName")}</label>
-      <div class="form-fields"><input type="text" name="name" placeholder="${manifests[0].name}"></div>
+      <div class="form-fields"><input type="text" name="name" placeholder="${manifestName(manifests[0])}"></div>
     </div>`;
   const result = await foundry.applications.api.DialogV2.prompt({
     window: { title: "GLOBEFORGE.CreateGlobe" },
@@ -55,7 +55,7 @@ async function createGlobeDialog() {
   if (!result) return;
   const manifest = manifests.find((m) => m.id === result.manifest);
   const scene = await Scene.create({
-    name: result.name || manifest.name,
+    name: result.name || manifestName(manifest),
     width: 20000,
     height: 20000,
     padding: 0,
@@ -76,7 +76,7 @@ export function injectSceneConfig(app, html) {
   const options = [
     `<option value="">—</option>`,
     ...allManifests().map(
-      (m) => `<option value="${m.id}" ${m.id === flags.manifest ? "selected" : ""}>${m.name}</option>`
+      (m) => `<option value="${m.id}" ${m.id === flags.manifest ? "selected" : ""}>${manifestName(m)}</option>`
     )
   ].join("");
   const globe = document.createElement("div");

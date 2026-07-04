@@ -23,3 +23,8 @@ export function manifestsReady() {
 
 export const getManifest = (id) => registry.get(id);
 export const allManifests = () => [...registry.values()];
+
+export const manifestName = (manifest) =>
+  typeof manifest.name === "string"
+    ? manifest.name
+    : manifest.name[game.i18n.lang] ?? manifest.name.en ?? Object.values(manifest.name)[0];
