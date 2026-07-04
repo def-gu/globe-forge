@@ -128,3 +128,46 @@
 #globe-forge-canvas .maplibregl-popup-anchor-right .maplibregl-popup-tip {
   border-left-color: rgba(16, 20, 32, 0.96);
 }
+
+#globe-forge-canvas .gf-note {
+  position: relative;
+  cursor: pointer;
+}
+
+#globe-forge-canvas .gf-note i {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(16, 20, 32, 0.9);
+  border: 1px solid rgba(228, 200, 134, 0.6);
+  color: #ffd98c;
+  font-size: 13px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+#globe-forge-canvas .gf-note:hover i {
+  background: rgba(36, 42, 60, 0.95);
+  color: #ffffff;
+}
+
+#globe-forge-canvas .gf-note-label {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 3px;
+  font-family: var(--font-primary, "Signika", sans-serif);
+  font-size: 12px;
+  color: #ffffff;
+  text-shadow: 0 0 3px #000, 0 0 6px #000;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+#globe-forge-canvas .gf-note:hover .gf-note-label {
+  display: block;
+}
