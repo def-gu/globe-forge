@@ -8,7 +8,7 @@ async function load() {
     const route = foundry.utils.getRoute(`modules/globe-forge/manifests/${id}.json`);
     const res = await fetch(route);
     if (!res.ok) {
-      console.error(`globe-forge: не удалось загрузить манифест ${id}: HTTP ${res.status}`);
+      console.error(`globe-forge: failed to load manifest ${id}: HTTP ${res.status}`);
       continue;
     }
     const manifest = await res.json();
