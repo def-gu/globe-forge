@@ -18,3 +18,6 @@ jobs:
           for f in scripts/*.mjs; do node --check "$f"; done
       - name: Validate module.json
         run: node -e "JSON.parse(require('fs').readFileSync('module.json', 'utf8'))"
+      - name: Run tests
+        run: |
+          for f in test/*.test.mjs; do node --test "$f"; done
