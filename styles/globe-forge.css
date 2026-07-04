@@ -9,7 +9,11 @@
 #globe-forge-canvas::before {
   content: "";
   position: absolute;
-  inset: -25%;
+  left: 50%;
+  top: 50%;
+  width: 150vmax;
+  height: 150vmax;
+  margin: -75vmax 0 0 -75vmax;
   background: url(../assets/space.svg) center / cover no-repeat;
   animation: globe-forge-sky 600s linear infinite;
 }
