@@ -99,6 +99,36 @@
   background: rgba(228, 200, 134, 0.25);
 }
 
+#globe-forge-canvas .gf-popup-actions {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(228, 200, 134, 0.25);
+}
+
+#globe-forge-canvas .gf-popup-actions button {
+  width: 100%;
+  height: 28px;
+  padding: 0 10px;
+  font-family: var(--font-primary, "Signika", sans-serif);
+  font-size: 13px;
+  color: #e8e6df;
+  background: rgba(228, 200, 134, 0.12);
+  border: 1px solid rgba(228, 200, 134, 0.35);
+  border-radius: 4px;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+#globe-forge-canvas .gf-popup-actions button:hover {
+  background: rgba(228, 200, 134, 0.25);
+  color: #ffffff;
+  box-shadow: none;
+}
+
+#globe-forge-canvas .gf-popup-actions button i {
+  margin-right: 4px;
+}
+
 #globe-forge-canvas .gf-popup a {
   color: #ffd98c;
   text-decoration: none;
