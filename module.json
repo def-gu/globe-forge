@@ -1,7 +1,7 @@
 {
   "id": "globe-forge",
   "title": "Globe Forge",
-  "description": "Интерактивные глобусы игровых миров: сцены-глобусы с векторными тайлами, декларативные манифесты миров, Голарион в комплекте.",
+  "description": "Interactive globes of game worlds: globe scenes with vector tiles, declarative world manifests, Golarion included.",
   "version": "0.0.1",
   "compatibility": {
     "minimum": "13",
