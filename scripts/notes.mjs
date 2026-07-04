@@ -1,7 +1,5 @@
 import * as maplibregl from "../lib/maplibre-gl.mjs";
-import { lonLatToScenePx, scenePxToLonLat } from "./geo.mjs";
-
-const wrapLon = (lon) => ((((lon + 180) % 360) + 360) % 360) - 180;
+import { lonLatToScenePx, scenePxToLonLat, wrapLon } from "./geo.mjs";
 
 const visibleNote = (note) => game.user.isGM || !note.entryId || (note.entry?.visible ?? false);
 

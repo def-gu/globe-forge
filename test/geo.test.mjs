@@ -8,11 +8,22 @@ import {
   scenePxToLonLat,
   tileAt,
   tileBounds,
-  greatCircleKm
+  greatCircleKm,
+  wrapLon
 } from "../scripts/geo.mjs";
 
 const close = (actual, expected, eps = 1e-9) =>
   assert.ok(Math.abs(actual - expected) < eps, `${actual} != ${expected} (eps ${eps})`);
+
+test("longitude wraps onto [-180, 180)", () => {
+  close(wrapLon(0), 0);
+  close(wrapLon(179), 179);
+  close(wrapLon(181), -179);
+  close(wrapLon(-181), 179);
+  close(wrapLon(360), 0);
+  close(wrapLon(-540), -180);
+  close(wrapLon(35 + 720), 35);
+});
 
 test("null island maps to mercator center", () => {
   const m = lonLatToMercator({ lon: 0, lat: 0 });
