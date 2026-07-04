@@ -1,0 +1,26 @@
+{
+  "id": "golarion",
+  "name": "Голарион",
+  "schema": 1,
+  "worldRadiusKm": 6371,
+  "grid": {
+    "type": "square",
+    "sizeKm": 20
+  },
+  "dataSchema": "pf-wikis-mlt-1",
+  "style": "golarion",
+  "sources": [
+    {
+      "type": "file",
+      "path": "globe-forge/golarion.pmtiles"
+    },
+    {
+      "type": "url",
+      "url": "https://storage.yandexcloud.net/globe-golarion/golarion.pmtiles"
+    }
+  ],
+  "view": {
+    "center": [35, -7],
+    "zoom": 4.5
+  }
+}
