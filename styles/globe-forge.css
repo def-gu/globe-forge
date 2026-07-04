@@ -27,3 +27,49 @@
     transform: rotate(360deg);
   }
 }
+
+#globe-forge-canvas .maplibregl-popup-content {
+  background: rgba(16, 20, 32, 0.95);
+  color: #e8e6df;
+  border-radius: 6px;
+  padding: 10px 14px;
+  max-height: 40vh;
+  overflow-y: auto;
+}
+
+#globe-forge-canvas .maplibregl-popup-close-button {
+  color: #e8e6df;
+  font-size: 16px;
+}
+
+#globe-forge-canvas .gf-popup h3 {
+  margin: 0 0 0.35em;
+}
+
+#globe-forge-canvas .gf-popup p {
+  margin: 0.35em 0 0;
+}
+
+#globe-forge-canvas .gf-popup a {
+  color: #8fb8ff;
+}
+
+#globe-forge-canvas .maplibregl-popup-anchor-top .maplibregl-popup-tip,
+#globe-forge-canvas .maplibregl-popup-anchor-top-left .maplibregl-popup-tip,
+#globe-forge-canvas .maplibregl-popup-anchor-top-right .maplibregl-popup-tip {
+  border-bottom-color: rgba(16, 20, 32, 0.95);
+}
+
+#globe-forge-canvas .maplibregl-popup-anchor-bottom .maplibregl-popup-tip,
+#globe-forge-canvas .maplibregl-popup-anchor-bottom-left .maplibregl-popup-tip,
+#globe-forge-canvas .maplibregl-popup-anchor-bottom-right .maplibregl-popup-tip {
+  border-top-color: rgba(16, 20, 32, 0.95);
+}
+
+#globe-forge-canvas .maplibregl-popup-anchor-left .maplibregl-popup-tip {
+  border-right-color: rgba(16, 20, 32, 0.95);
+}
+
+#globe-forge-canvas .maplibregl-popup-anchor-right .maplibregl-popup-tip {
+  border-left-color: rgba(16, 20, 32, 0.95);
+}
