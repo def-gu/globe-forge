@@ -29,47 +29,69 @@
 }
 
 #globe-forge-canvas .maplibregl-popup-content {
-  background: rgba(16, 20, 32, 0.95);
+  font-family: var(--font-primary, "Signika", sans-serif);
+  font-size: 14px;
+  line-height: 1.4;
   color: #e8e6df;
-  border-radius: 6px;
-  padding: 10px 14px;
+  background: rgba(16, 20, 32, 0.96);
+  border: 1px solid rgba(228, 200, 134, 0.35);
+  border-radius: 8px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.65);
+  padding: 10px 26px 10px 14px;
+  max-width: 320px;
   max-height: 40vh;
   overflow-y: auto;
 }
 
 #globe-forge-canvas .maplibregl-popup-close-button {
-  color: #e8e6df;
-  font-size: 16px;
+  color: #b8b2a4;
+  font-size: 18px;
+  padding: 0 6px;
+}
+
+#globe-forge-canvas .maplibregl-popup-close-button:hover {
+  color: #ffffff;
+  background: none;
 }
 
 #globe-forge-canvas .gf-popup h3 {
-  margin: 0 0 0.35em;
+  margin: 0 0 6px;
+  padding-bottom: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(228, 200, 134, 0.25);
 }
 
 #globe-forge-canvas .gf-popup p {
-  margin: 0.35em 0 0;
+  margin: 6px 0 0;
 }
 
 #globe-forge-canvas .gf-popup a {
-  color: #8fb8ff;
+  color: #ffd98c;
+  text-decoration: none;
+}
+
+#globe-forge-canvas .gf-popup a:hover {
+  text-decoration: underline;
+  text-shadow: 0 0 6px rgba(255, 217, 140, 0.5);
 }
 
 #globe-forge-canvas .maplibregl-popup-anchor-top .maplibregl-popup-tip,
 #globe-forge-canvas .maplibregl-popup-anchor-top-left .maplibregl-popup-tip,
 #globe-forge-canvas .maplibregl-popup-anchor-top-right .maplibregl-popup-tip {
-  border-bottom-color: rgba(16, 20, 32, 0.95);
+  border-bottom-color: rgba(16, 20, 32, 0.96);
 }
 
 #globe-forge-canvas .maplibregl-popup-anchor-bottom .maplibregl-popup-tip,
 #globe-forge-canvas .maplibregl-popup-anchor-bottom-left .maplibregl-popup-tip,
 #globe-forge-canvas .maplibregl-popup-anchor-bottom-right .maplibregl-popup-tip {
-  border-top-color: rgba(16, 20, 32, 0.95);
+  border-top-color: rgba(16, 20, 32, 0.96);
 }
 
 #globe-forge-canvas .maplibregl-popup-anchor-left .maplibregl-popup-tip {
-  border-right-color: rgba(16, 20, 32, 0.95);
+  border-right-color: rgba(16, 20, 32, 0.96);
 }
 
 #globe-forge-canvas .maplibregl-popup-anchor-right .maplibregl-popup-tip {
-  border-left-color: rgba(16, 20, 32, 0.95);
+  border-left-color: rgba(16, 20, 32, 0.96);
 }
