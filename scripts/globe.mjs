@@ -25,13 +25,15 @@ export async function activateGlobe(scene) {
   const flags = globeFlags(scene);
   const manifest = getManifest(flags?.manifest);
   if (!manifest) {
-    ui.notifications.error(`globe-forge: неизвестный манифест «${flags?.manifest}»`);
+    ui.notifications.error(
+      `globe-forge: ${game.i18n.format("GLOBEFORGE.UnknownManifest", { id: flags?.manifest })}`
+    );
     return;
   }
 
   const tilesUrl = await firstReachable(manifest.sources.map(sourceUrl));
   if (!tilesUrl) {
-    ui.notifications.error("globe-forge: ни один источник данных глобуса недоступен");
+    ui.notifications.error(`globe-forge: ${game.i18n.localize("GLOBEFORGE.NoSourceReachable")}`);
     return;
   }
 
