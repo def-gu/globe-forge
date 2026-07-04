@@ -1,0 +1,3 @@
+maplibre-gl 6.0.0-18 (dist: maplibre-gl.mjs, -shared, -worker, css)
+pmtiles 4.4.1 (dist/pmtiles.js UMD)
+npm dist files, unmodified
