@@ -15,6 +15,15 @@ function pinElement(note) {
   return el;
 }
 
+function openNote(scene, id) {
+  const note = scene.notes.get(id);
+  const entry = note?.entry;
+  if (!entry) return;
+  const options = {};
+  if (note.pageId) options.pageId = note.pageId;
+  entry.sheet.render(true, options);
+}
+
 export function attachNotes(map, scene, sceneSize) {
   const markers = new Map();
 
@@ -29,7 +38,12 @@ export function attachNotes(map, scene, sceneSize) {
         existing.getElement().querySelector(".gf-note-label").textContent = note.label;
         continue;
       }
-      const marker = new maplibregl.Marker({ element: pinElement(note) })
+      const el = pinElement(note);
+      el.addEventListener("click", (ev) => {
+        ev.stopPropagation();
+        openNote(scene, note.id);
+      });
+      const marker = new maplibregl.Marker({ element: el })
         .setLngLat([lon, lat])
         .addTo(map);
       markers.set(note.id, marker);
