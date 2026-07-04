@@ -22,14 +22,16 @@ export function attachLocationPopups(map, { url, slices, layers, scene, sceneSiz
     if (!text) return;
     const coord = nearestCoordinate(feature.geometry, e.lngLat);
     const content = popupContent(text);
-    const actions = journalActions(feature, coord);
+    const actions = journalActions(feature, coord, content);
     if (actions) content.append(actions);
     popup.setLngLat(coord).setDOMContent(content).addTo(map);
   };
 
   // "Open journal" when a note is anchored at this location, otherwise "Create
   // journal": a new entry named after the location plus a pin at its coordinates.
-  function journalActions(feature, coord) {
+  // The name comes from the card title (<h3>): unlike the label property it
+  // exists for every location, and JournalEntry rejects blank names.
+  function journalActions(feature, coord, content) {
     const fid = Number(feature.properties.fid);
     const px = lonLatToScenePx({ lon: wrapLon(coord[0]), lat: coord[1] }, sceneSize);
     const note = findAnchoredNote(scene, fid, px);
@@ -46,8 +48,15 @@ export function attachLocationPopups(map, { url, slices, layers, scene, sceneSiz
       btn.innerHTML = `<i class="fa-solid fa-book-medical"></i> ${game.i18n.localize("GLOBEFORGE.CreateJournal")}`;
       btn.addEventListener("click", async () => {
         btn.disabled = true;
-        const name = feature.properties.label ?? "";
+        const name =
+          content.querySelector("h3")?.textContent.trim() ||
+          feature.properties.label ||
+          game.i18n.localize("GLOBEFORGE.UnnamedPlace");
         const created = await createJournalPin(scene, { name, x: px.x, y: px.y, fid });
+        if (!created) {
+          btn.disabled = false;
+          return;
+        }
         popup.remove();
         openNote(scene, created.id);
       });

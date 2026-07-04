@@ -41,6 +41,7 @@ export const canCreateJournalPin = () =>
 
 export async function createJournalPin(scene, { name, x, y, fid }) {
   const entry = await getDocumentClass("JournalEntry").create({ name });
+  if (!entry) return null;
   const [note] = await scene.createEmbeddedDocuments("Note", [
     {
       entryId: entry.id,
