@@ -1,0 +1,30 @@
+{
+  "id": "globe-forge",
+  "title": "Globe Forge",
+  "description": "Интерактивные глобусы игровых миров: сцены-глобусы с векторными тайлами, декларативные манифесты миров, Голарион в комплекте.",
+  "version": "0.0.1",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13"
+  },
+  "scripts": [
+    "lib/pmtiles.js"
+  ],
+  "esmodules": [
+    "scripts/main.mjs"
+  ],
+  "styles": [
+    "lib/maplibre-gl.css"
+  ],
+  "authors": [
+    {
+      "name": "def-gu",
+      "url": "https://github.com/def-gu"
+    }
+  ],
+  "url": "https://github.com/def-gu/globe-forge",
+  "bugs": "https://github.com/def-gu/globe-forge/issues",
+  "license": "LICENSE",
+  "manifest": "https://github.com/def-gu/globe-forge/releases/latest/download/module.json",
+  "download": "https://github.com/def-gu/globe-forge/releases/download/v0.0.1/module.zip"
+}
