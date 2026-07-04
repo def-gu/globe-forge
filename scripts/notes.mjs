@@ -28,11 +28,13 @@ export function openNote(scene, id) {
 
 // A note counts as anchored to a location either by the stored feature fid
 // (set when created from the location card) or by plain proximity, so pins
-// dropped by hand onto the same spot are picked up too.
+// dropped by hand onto the same spot are picked up too. Only notes visible
+// to the current user count: a hidden journal must not surface in the card.
 export function findAnchoredNote(scene, fid, px, radiusPx = 30) {
+  const notes = scene.notes.filter(visibleNote);
   return (
-    scene.notes.find((n) => n.getFlag(MODULE, "fid") === fid) ??
-    scene.notes.find((n) => Math.hypot(n.x - px.x, n.y - px.y) <= radiusPx)
+    notes.find((n) => n.getFlag(MODULE, "fid") === fid) ??
+    notes.find((n) => Math.hypot(n.x - px.x, n.y - px.y) <= radiusPx)
   );
 }
 
@@ -89,6 +91,13 @@ export function attachNotes(map, scene, sceneSize) {
     if (doc.parent?.id === scene.id) sync();
   };
   const hooks = ["createNote", "updateNote", "deleteNote"].map((name) => [name, Hooks.on(name, refresh)]);
+  // Journal permission or name changes must show/hide/rename pins right away.
+  const entryRefresh = (entry) => {
+    if (scene.notes.some((n) => n.entryId === entry.id)) sync();
+  };
+  for (const name of ["updateJournalEntry", "deleteJournalEntry"]) {
+    hooks.push([name, Hooks.on(name, entryRefresh)]);
+  }
 
   const container = map.getContainer();
   const canCreate = () => game.user.hasPermission("NOTE_CREATE");
