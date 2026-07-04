@@ -9,6 +9,7 @@ A [Foundry VTT](https://foundryvtt.com/) v13 module: interactive globes of game 
 - Create a globe scene in one click with the **Create Globe** button in the scene directory.
 - Explore the full map of Golarion from the whole planet down to a single city.
 - Click a location to read what it is and jump to its PathfinderWiki article.
+- Drag a journal onto the globe to pin it there. Clicking the pin opens the journal.
 - Play offline by putting the map file into your Foundry data folder.
 - Replace the space around the sphere with your own backdrop in the scene configuration.
 
