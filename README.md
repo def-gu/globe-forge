@@ -6,12 +6,10 @@ A [Foundry VTT](https://foundryvtt.com/) v13 module: interactive globes of game 
 
 ## Features
 
-- **Create Globe** button in the scene directory: a "world + name" dialog creates a ready-to-use globe scene.
-- Full map of Golarion: borders by type, region and city labels, location icons, the current data era.
-- Starfield around the sphere with slow ambient rotation; the backdrop is configurable per scene (any CSS background).
-- Prioritized data sources: a local file first, then a network mirror — with automatic failover.
-- English and Russian interface localization.
-- "Globe" and "Globe backdrop" fields in the basics tab of the scene configuration.
+- Create a globe scene in one click with the **Create Globe** button in the scene directory.
+- Explore the full map of Golarion from the whole planet down to a single city.
+- Play offline by putting the map file into your Foundry data folder.
+- Replace the space around the sphere with your own backdrop in the scene configuration.
 
 ## Installation
 
