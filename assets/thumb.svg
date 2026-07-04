@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200">
+  <defs>
+    <radialGradient id="space" cx="50%" cy="38%" r="85%">
+      <stop offset="0%" stop-color="#182b4d"/>
+      <stop offset="100%" stop-color="#04060d"/>
+    </radialGradient>
+    <radialGradient id="globe" cx="36%" cy="32%" r="78%">
+      <stop offset="0%" stop-color="#86b6e8"/>
+      <stop offset="55%" stop-color="#2c5da0"/>
+      <stop offset="100%" stop-color="#112a52"/>
+    </radialGradient>
+  </defs>
+  <rect width="300" height="200" fill="url(#space)"/>
+  <g fill="#ffffff">
+    <circle cx="34" cy="28" r="1.1" opacity=".8"/>
+    <circle cx="262" cy="22" r="0.9" opacity=".6"/>
+    <circle cx="288" cy="74" r="1.2" opacity=".7"/>
+    <circle cx="18" cy="112" r="0.8" opacity=".5"/>
+    <circle cx="70" cy="58" r="0.7" opacity=".6"/>
+    <circle cx="232" cy="118" r="0.9" opacity=".5"/>
+    <circle cx="204" cy="40" r="0.7" opacity=".7"/>
+    <circle cx="96" cy="18" r="0.8" opacity=".5"/>
+  </g>
+  <circle cx="150" cy="84" r="52" fill="url(#globe)"/>
+  <g fill="none" stroke="#d8e8ff" stroke-opacity=".3">
+    <ellipse cx="150" cy="84" rx="52" ry="17"/>
+    <ellipse cx="150" cy="84" rx="30" ry="52"/>
+    <path d="M99.5 70h101M99.5 98h101"/>
+  </g>
+  <circle cx="150" cy="84" r="52" fill="none" stroke="#9fc4f2" stroke-opacity=".55"/>
+  <text x="150" y="174" text-anchor="middle" font-family="Georgia, serif" font-size="21" letter-spacing="7" fill="#d5c38a">GLOBE FORGE</text>
+</svg>

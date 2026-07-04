@@ -37,6 +37,8 @@ export async function activateGlobe(scene) {
 
   const el = document.createElement("div");
   el.id = "globe-forge-canvas";
+  const backdrop = flags.backdrop || manifest.backdrop;
+  if (backdrop) el.style.background = backdrop;
   document.body.append(el);
   canvas.app.ticker.stop();
 
