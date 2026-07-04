@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Journals can be pinned to the globe by drag and drop. Clicking a pin opens the journal.
+- The location card offers to open the journal anchored there or to create a new one.
 
 ## [0.2.0] - 2026-07-04
 
