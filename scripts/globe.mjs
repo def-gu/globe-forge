@@ -71,7 +71,9 @@ export async function activateGlobe(scene) {
     attachLocationPopups(map, {
       url: moduleRoute(manifest.popups.path),
       slices: manifest.popups.slices,
-      layers: manifest.popups.layers
+      layers: manifest.popups.layers,
+      scene,
+      sceneSize: SCENE_SIZE
     });
   }
 

@@ -1,7 +1,9 @@
 import * as maplibregl from "../lib/maplibre-gl.mjs";
 import { createTextIndex } from "./popups.mjs";
+import { lonLatToScenePx, wrapLon } from "./geo.mjs";
+import { canCreateJournalPin, createJournalPin, findAnchoredNote, openNote } from "./notes.mjs";
 
-export function attachLocationPopups(map, { url, slices, layers }) {
+export function attachLocationPopups(map, { url, slices, layers, scene, sceneSize }) {
   const index = createTextIndex({ url, slices });
   const popup = new maplibregl.Popup({ maxWidth: "320px" });
 
@@ -18,11 +20,41 @@ export function attachLocationPopups(map, { url, slices, layers }) {
       return;
     }
     if (!text) return;
-    popup
-      .setLngLat(nearestCoordinate(feature.geometry, e.lngLat))
-      .setDOMContent(popupContent(text))
-      .addTo(map);
+    const coord = nearestCoordinate(feature.geometry, e.lngLat);
+    const content = popupContent(text);
+    const actions = journalActions(feature, coord);
+    if (actions) content.append(actions);
+    popup.setLngLat(coord).setDOMContent(content).addTo(map);
   };
+
+  // "Open journal" when a note is anchored at this location, otherwise "Create
+  // journal": a new entry named after the location plus a pin at its coordinates.
+  function journalActions(feature, coord) {
+    const fid = Number(feature.properties.fid);
+    const px = lonLatToScenePx({ lon: wrapLon(coord[0]), lat: coord[1] }, sceneSize);
+    const note = findAnchoredNote(scene, fid, px);
+    if (!note && !canCreateJournalPin()) return null;
+
+    const row = document.createElement("div");
+    row.className = "gf-popup-actions";
+    const btn = document.createElement("button");
+    btn.type = "button";
+    if (note) {
+      btn.innerHTML = `<i class="fa-solid fa-book-open"></i> ${game.i18n.localize("GLOBEFORGE.OpenJournal")}`;
+      btn.addEventListener("click", () => openNote(scene, note.id));
+    } else {
+      btn.innerHTML = `<i class="fa-solid fa-book-medical"></i> ${game.i18n.localize("GLOBEFORGE.CreateJournal")}`;
+      btn.addEventListener("click", async () => {
+        btn.disabled = true;
+        const name = feature.properties.label ?? "";
+        const created = await createJournalPin(scene, { name, x: px.x, y: px.y, fid });
+        popup.remove();
+        openNote(scene, created.id);
+      });
+    }
+    row.append(btn);
+    return row;
+  }
 
   for (const layer of layers) {
     map.on("mouseenter", layer, (e) => {

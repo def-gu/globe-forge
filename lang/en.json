@@ -11,6 +11,8 @@
     "GlobeHint": "The scene is rendered as a globe of the selected world.",
     "Backdrop": "Globe backdrop",
     "BackdropPlaceholder": "CSS background: url(...) center/cover or a gradient",
-    "BackdropHint": "What is visible around the sphere. Empty — default starfield."
+    "BackdropHint": "What is visible around the sphere. Empty — default starfield.",
+    "OpenJournal": "Open journal",
+    "CreateJournal": "Create journal"
   }
 }
