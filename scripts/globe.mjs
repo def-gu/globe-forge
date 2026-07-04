@@ -2,6 +2,7 @@ import * as maplibregl from "../lib/maplibre-gl.mjs";
 import { STYLES } from "./styles.mjs";
 import { firstReachable } from "./sources.mjs";
 import { getManifest, manifestsReady } from "./manifests.mjs";
+import { attachLocationPopups } from "./interaction.mjs";
 
 const MODULE = "globe-forge";
 
@@ -64,6 +65,14 @@ export async function activateGlobe(scene) {
     zoom: view.zoom
   });
   map.on("error", (e) => console.error("globe-forge:", e.error ?? e));
+
+  if (manifest.popups) {
+    attachLocationPopups(map, {
+      url: moduleRoute(manifest.popups.path),
+      slices: manifest.popups.slices,
+      layers: manifest.popups.layers
+    });
+  }
 
   active = { map, el, sceneId: scene.id };
 }
