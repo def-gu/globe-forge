@@ -4,6 +4,7 @@ import { firstReachable } from "./sources.mjs";
 import { getManifest, manifestsReady } from "./manifests.mjs";
 import { attachLocationPopups } from "./interaction.mjs";
 import { attachNotes } from "./notes.mjs";
+import { wrapLon } from "./geo.mjs";
 
 const MODULE = "globe-forge";
 
@@ -49,7 +50,7 @@ export async function activateGlobe(scene) {
   document.body.append(el);
   canvas.app.ticker.stop();
 
-  const view = flags.view ?? manifest.view;
+  const view = game.settings.get(MODULE, "views")[scene.id] ?? flags.view ?? manifest.view;
   const map = new maplibregl.Map({
     container: el,
     style: STYLES[manifest.style]({
@@ -66,6 +67,21 @@ export async function activateGlobe(scene) {
     zoom: view.zoom
   });
   map.on("error", (e) => console.error("globe-forge:", e.error ?? e));
+
+  // Camera memory per scene, per client. The view is captured on moveend and
+  // only the settings write is debounced: the deferred callback must not touch
+  // the map, which may already be removed by a scene switch.
+  let pendingView = null;
+  const persistView = foundry.utils.debounce(() => {
+    if (!pendingView) return;
+    const views = { ...game.settings.get(MODULE, "views"), [scene.id]: pendingView };
+    game.settings.set(MODULE, "views", views);
+  }, 500);
+  map.on("moveend", () => {
+    const c = map.getCenter();
+    pendingView = { center: [wrapLon(c.lng), c.lat], zoom: map.getZoom() };
+    persistView();
+  });
 
   if (manifest.popups) {
     attachLocationPopups(map, {

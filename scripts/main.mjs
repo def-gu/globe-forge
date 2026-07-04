@@ -6,6 +6,12 @@ import { injectCreateButton, injectSceneConfig } from "./ui.mjs";
 Hooks.once("init", () => {
   const protocol = new pmtiles.Protocol();
   maplibregl.addProtocol("pmtiles", protocol.tilev4 ?? protocol.tile);
+  game.settings.register("globe-forge", "views", {
+    scope: "client",
+    config: false,
+    type: Object,
+    default: {}
+  });
 });
 
 Hooks.once("setup", () => manifestsReady());
