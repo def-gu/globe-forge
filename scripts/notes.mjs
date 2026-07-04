@@ -15,13 +15,41 @@ function pinElement(note) {
   return el;
 }
 
-function openNote(scene, id) {
+const MODULE = "globe-forge";
+
+export function openNote(scene, id) {
   const note = scene.notes.get(id);
   const entry = note?.entry;
   if (!entry) return;
   const options = {};
   if (note.pageId) options.pageId = note.pageId;
   entry.sheet.render(true, options);
+}
+
+// A note counts as anchored to a location either by the stored feature fid
+// (set when created from the location card) or by plain proximity, so pins
+// dropped by hand onto the same spot are picked up too.
+export function findAnchoredNote(scene, fid, px, radiusPx = 30) {
+  return (
+    scene.notes.find((n) => n.getFlag(MODULE, "fid") === fid) ??
+    scene.notes.find((n) => Math.hypot(n.x - px.x, n.y - px.y) <= radiusPx)
+  );
+}
+
+export const canCreateJournalPin = () =>
+  game.user.hasPermission("NOTE_CREATE") && getDocumentClass("JournalEntry").canUserCreate(game.user);
+
+export async function createJournalPin(scene, { name, x, y, fid }) {
+  const entry = await getDocumentClass("JournalEntry").create({ name });
+  const [note] = await scene.createEmbeddedDocuments("Note", [
+    {
+      entryId: entry.id,
+      x: Math.round(x),
+      y: Math.round(y),
+      flags: { [MODULE]: { fid } }
+    }
+  ]);
+  return note;
 }
 
 export function attachNotes(map, scene, sceneSize) {
