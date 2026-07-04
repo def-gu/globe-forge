@@ -14,7 +14,7 @@ export function injectCreateButton(app, html) {
   const btn = document.createElement("button");
   btn.type = "button";
   btn.className = "globe-forge-create";
-  btn.innerHTML = '<i class="fa-solid fa-globe"></i> <span>Создать глобус</span>';
+  btn.innerHTML = `<i class="fa-solid fa-globe"></i> <span>${game.i18n.localize("GLOBEFORGE.CreateGlobe")}</span>`;
   btn.addEventListener("click", () => createGlobeDialog());
   row.append(btn);
   actions.after(row);
@@ -24,7 +24,7 @@ async function createGlobeDialog() {
   await manifestsReady();
   const manifests = allManifests();
   if (!manifests.length) {
-    ui.notifications.error("globe-forge: нет доступных манифестов глобусов");
+    ui.notifications.error(`globe-forge: ${game.i18n.localize("GLOBEFORGE.NoManifests")}`);
     return;
   }
   const options = manifests
@@ -32,19 +32,19 @@ async function createGlobeDialog() {
     .join("");
   const content = `
     <div class="form-group">
-      <label>Мир</label>
+      <label>${game.i18n.localize("GLOBEFORGE.World")}</label>
       <div class="form-fields"><select name="manifest">${options}</select></div>
     </div>
     <div class="form-group">
-      <label>Название сцены</label>
+      <label>${game.i18n.localize("GLOBEFORGE.SceneName")}</label>
       <div class="form-fields"><input type="text" name="name" placeholder="${manifests[0].name}"></div>
     </div>`;
   const result = await foundry.applications.api.DialogV2.prompt({
-    window: { title: "Создать глобус" },
+    window: { title: "GLOBEFORGE.CreateGlobe" },
     content,
     rejectClose: false,
     ok: {
-      label: "Создать",
+      label: "GLOBEFORGE.Create",
       icon: "fa-solid fa-globe",
       callback: (event, button) => ({
         manifest: button.form.elements.manifest.value,
@@ -82,17 +82,17 @@ export function injectSceneConfig(app, html) {
   const globe = document.createElement("div");
   globe.className = "form-group";
   globe.innerHTML = `
-    <label>Глобус</label>
+    <label>${game.i18n.localize("GLOBEFORGE.Globe")}</label>
     <div class="form-fields"><select name="flags.${MODULE}.manifest">${options}</select></div>
-    <p class="hint">Сцена рендерится как глобус выбранного мира.</p>`;
+    <p class="hint">${game.i18n.localize("GLOBEFORGE.GlobeHint")}</p>`;
   const backdrop = document.createElement("div");
   backdrop.className = "form-group";
   backdrop.innerHTML = `
-    <label>Задник глобуса</label>
+    <label>${game.i18n.localize("GLOBEFORGE.Backdrop")}</label>
     <div class="form-fields">
       <input type="text" name="flags.${MODULE}.backdrop" value="${flags.backdrop ?? ""}"
-             placeholder="CSS-фон: url(...) center/cover или градиент">
+             placeholder="${game.i18n.localize("GLOBEFORGE.BackdropPlaceholder")}">
     </div>
-    <p class="hint">Что видно вокруг сферы. Пусто — космос по умолчанию.</p>`;
+    <p class="hint">${game.i18n.localize("GLOBEFORGE.BackdropHint")}</p>`;
   basics.append(globe, backdrop);
 }
