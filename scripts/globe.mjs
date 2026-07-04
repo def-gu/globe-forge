@@ -3,6 +3,7 @@ import { STYLES } from "./styles.mjs";
 import { firstReachable } from "./sources.mjs";
 import { getManifest, manifestsReady } from "./manifests.mjs";
 import { attachLocationPopups } from "./interaction.mjs";
+import { attachNotes } from "./notes.mjs";
 
 const MODULE = "globe-forge";
 
@@ -74,11 +75,14 @@ export async function activateGlobe(scene) {
     });
   }
 
-  active = { map, el, sceneId: scene.id };
+  const detachNotes = attachNotes(map, scene, SCENE_SIZE);
+
+  active = { map, el, sceneId: scene.id, detachNotes };
 }
 
 export function deactivateGlobe() {
   if (active) {
+    active.detachNotes();
     active.map.remove();
     active.el.remove();
     active = null;
