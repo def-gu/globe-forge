@@ -14,7 +14,8 @@
     "scripts/main.mjs"
   ],
   "styles": [
-    "lib/maplibre-gl.css"
+    "lib/maplibre-gl.css",
+    "styles/globe-forge.css"
   ],
   "authors": [
     {
