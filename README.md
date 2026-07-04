@@ -10,7 +10,7 @@ A [Foundry VTT](https://foundryvtt.com/) v13 module: interactive globes of game 
 - Explore the full map of Golarion from the whole planet down to a single city.
 - Click a location to read what it is and jump to its PathfinderWiki article.
 - The location card can open the journal pinned there or create a new one in one click.
-- Drag a journal onto the globe to pin it there. Clicking the pin opens the journal.
+- Drag a journal onto the globe to anchor it to a place. The place card opens it.
 - Play offline by putting the map file into your Foundry data folder.
 - Replace the space around the sphere with your own backdrop in the scene configuration.
 
