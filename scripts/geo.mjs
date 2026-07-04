@@ -1,5 +1,7 @@
 export const MERCATOR_MAX_LAT = 85.05112877980659;
 
+export const wrapLon = (lon) => ((((lon + 180) % 360) + 360) % 360) - 180;
+
 const D2R = Math.PI / 180;
 const R2D = 180 / Math.PI;
 
