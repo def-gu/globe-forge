@@ -67,9 +67,12 @@ export async function activateGlobe(scene) {
 }
 
 export function deactivateGlobe() {
-  if (!active) return;
-  active.map.remove();
-  active.el.remove();
-  active = null;
-  if (canvas?.ready) canvas.app.ticker.start();
+  if (active) {
+    active.map.remove();
+    active.el.remove();
+    active = null;
+  }
+  // Core never restarts the shared PIXI ticker (it only adds/removes callbacks),
+  // and canvas.ready is already false inside canvasTearDown — start unconditionally.
+  canvas?.app?.ticker.start();
 }
