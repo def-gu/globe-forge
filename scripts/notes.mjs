@@ -1,21 +1,31 @@
-import * as maplibregl from "../lib/maplibre-gl.mjs";
 import { lonLatToScenePx, scenePxToLonLat, wrapLon } from "./geo.mjs";
 
 const visibleNote = (note) => game.user.isGM || !note.entryId || (note.entry?.visible ?? false);
 
-function pinElement(note) {
-  const el = document.createElement("div");
-  el.className = "gf-note";
-  const icon = document.createElement("i");
-  icon.className = "fa-solid fa-book-open";
-  const label = document.createElement("span");
-  label.className = "gf-note-label";
-  label.textContent = note.label;
-  el.append(icon, label);
-  return el;
-}
-
 const MODULE = "globe-forge";
+const NOTES_LAYER = "globe-forge-notes";
+
+// A round badge with the book-open glyph, drawn at 2x for crisp scaling.
+// Font Awesome is already loaded by the Foundry UI itself.
+function noteBadge() {
+  const size = 64;
+  const canvas = document.createElement("canvas");
+  canvas.width = canvas.height = size;
+  const ctx = canvas.getContext("2d");
+  ctx.beginPath();
+  ctx.arc(32, 32, 29, 0, 2 * Math.PI);
+  ctx.fillStyle = "rgba(16, 20, 32, 0.92)";
+  ctx.fill();
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = "rgba(228, 200, 134, 0.9)";
+  ctx.stroke();
+  ctx.fillStyle = "#ffd98c";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.font = '900 28px "Font Awesome 6 Pro", "Font Awesome 6 Free"';
+  ctx.fillText("\uf518", 32, 33);
+  return ctx.getImageData(0, 0, size, size);
+}
 
 export function openNote(scene, id) {
   const note = scene.notes.get(id);
@@ -56,36 +66,69 @@ export async function createJournalPin(scene, { name, x, y, fid }) {
 }
 
 export function attachNotes(map, scene, sceneSize) {
-  const markers = new Map();
+  let ready = false;
+  let disposed = false;
+
+  const collection = () => ({
+    type: "FeatureCollection",
+    features: scene.notes.filter(visibleNote).map((note) => {
+      const { lon, lat } = scenePxToLonLat({ x: note.x, y: note.y }, sceneSize);
+      return {
+        type: "Feature",
+        geometry: { type: "Point", coordinates: [lon, lat] },
+        properties: { id: note.id, label: note.label }
+      };
+    })
+  });
 
   const sync = () => {
-    const seen = new Set();
-    for (const note of scene.notes.filter(visibleNote)) {
-      seen.add(note.id);
-      const { lon, lat } = scenePxToLonLat({ x: note.x, y: note.y }, sceneSize);
-      const existing = markers.get(note.id);
-      if (existing) {
-        existing.setLngLat([lon, lat]);
-        existing.getElement().querySelector(".gf-note-label").textContent = note.label;
-        continue;
-      }
-      const el = pinElement(note);
-      el.addEventListener("click", (ev) => {
-        ev.stopPropagation();
-        openNote(scene, note.id);
-      });
-      const marker = new maplibregl.Marker({ element: el })
-        .setLngLat([lon, lat])
-        .addTo(map);
-      markers.set(note.id, marker);
-    }
-    for (const [id, marker] of markers) {
-      if (seen.has(id)) continue;
-      marker.remove();
-      markers.delete(id);
-    }
+    if (ready && !disposed) map.getSource(NOTES_LAYER)?.setData(collection());
   };
-  sync();
+
+  const onPinClick = (e) => {
+    const id = e.features?.[0]?.properties?.id;
+    if (id) openNote(scene, id);
+  };
+  const onPinEnter = () => (map.getCanvas().style.cursor = "pointer");
+  const onPinLeave = () => (map.getCanvas().style.cursor = "");
+
+  // Pins are a symbol layer, not DOM markers: they scale and hide with the map
+  // like location icons instead of staying screen-sized at any zoom. The
+  // bottom-left anchor keeps the point itself clickable — the badge grows to
+  // the upper right of it.
+  const setup = () => {
+    if (disposed) return;
+    map.addImage("gf-note", noteBadge(), { pixelRatio: 2 });
+    map.addSource(NOTES_LAYER, { type: "geojson", data: collection() });
+    map.addLayer({
+      id: NOTES_LAYER,
+      type: "symbol",
+      source: NOTES_LAYER,
+      layout: {
+        "icon-image": "gf-note",
+        "icon-anchor": "bottom-left",
+        "icon-overlap": "always",
+        "icon-size": ["interpolate", ["exponential", 2], ["zoom"], 1, 0.35, 5, 0.7, 8, 1],
+        "text-field": ["step", ["zoom"], "", 5, ["get", "label"]],
+        "text-font": ["NotoSans-Medium"],
+        "text-size": 12,
+        "text-anchor": "bottom-left",
+        "text-offset": [2.4, -0.8],
+        "text-optional": true
+      },
+      paint: {
+        "text-color": "#ffd98c",
+        "text-halo-color": "#0a0a0a",
+        "text-halo-width": 1
+      }
+    });
+    map.on("click", NOTES_LAYER, onPinClick);
+    map.on("mouseenter", NOTES_LAYER, onPinEnter);
+    map.on("mouseleave", NOTES_LAYER, onPinLeave);
+    ready = true;
+  };
+  if (map.isStyleLoaded()) setup();
+  else map.once("load", setup);
 
   const refresh = (doc) => {
     if (doc.parent?.id === scene.id) sync();
@@ -126,9 +169,16 @@ export function attachNotes(map, scene, sceneSize) {
   container.addEventListener("drop", onDrop);
 
   return () => {
+    disposed = true;
     for (const [name, id] of hooks) Hooks.off(name, id);
-    for (const marker of markers.values()) marker.remove();
-    markers.clear();
+    if (ready) {
+      map.off("click", NOTES_LAYER, onPinClick);
+      map.off("mouseenter", NOTES_LAYER, onPinEnter);
+      map.off("mouseleave", NOTES_LAYER, onPinLeave);
+      if (map.getLayer(NOTES_LAYER)) map.removeLayer(NOTES_LAYER);
+      if (map.getSource(NOTES_LAYER)) map.removeSource(NOTES_LAYER);
+      if (map.hasImage("gf-note")) map.removeImage("gf-note");
+    }
     container.removeEventListener("dragover", onDragOver);
     container.removeEventListener("drop", onDrop);
   };
