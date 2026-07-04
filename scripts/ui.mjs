@@ -7,14 +7,17 @@ const asElement = (html) => (html instanceof HTMLElement ? html : html[0]);
 export function injectCreateButton(app, html) {
   if (!game.user.isGM) return;
   const element = asElement(html);
-  const footer = element.querySelector(".directory-footer");
-  if (!footer || footer.querySelector(".globe-forge-create")) return;
+  const actions = element.querySelector(".directory-header .header-actions");
+  if (!actions || element.querySelector(".globe-forge-create")) return;
+  const row = document.createElement("div");
+  row.className = "header-actions action-buttons flexrow";
   const btn = document.createElement("button");
   btn.type = "button";
   btn.className = "globe-forge-create";
-  btn.innerHTML = '<i class="fa-solid fa-globe"></i> Создать глобус';
+  btn.innerHTML = '<i class="fa-solid fa-globe"></i> <span>Создать глобус</span>';
   btn.addEventListener("click", () => createGlobeDialog());
-  footer.append(btn);
+  row.append(btn);
+  actions.after(row);
 }
 
 async function createGlobeDialog() {
@@ -57,6 +60,7 @@ async function createGlobeDialog() {
     height: 20000,
     padding: 0,
     backgroundColor: "#000000",
+    thumb: `modules/${MODULE}/assets/thumb.svg`,
     grid: { type: CONST.GRID_TYPES.GRIDLESS },
     tokenVision: false,
     flags: { [MODULE]: { manifest: manifest.id } }
@@ -66,20 +70,29 @@ async function createGlobeDialog() {
 
 export function injectSceneConfig(app, html) {
   const element = asElement(html);
-  const basics = element.querySelector('div.tab[data-tab="basics"]');
+  const basics = element.querySelector('.tab[data-tab="basics"]');
   if (!basics || basics.querySelector(`[name="flags.${MODULE}.manifest"]`)) return;
-  const current = app.document.flags?.[MODULE]?.manifest ?? "";
+  const flags = app.document.flags?.[MODULE] ?? {};
   const options = [
     `<option value="">—</option>`,
     ...allManifests().map(
-      (m) => `<option value="${m.id}" ${m.id === current ? "selected" : ""}>${m.name}</option>`
+      (m) => `<option value="${m.id}" ${m.id === flags.manifest ? "selected" : ""}>${m.name}</option>`
     )
   ].join("");
-  const group = document.createElement("div");
-  group.className = "form-group";
-  group.innerHTML = `
+  const globe = document.createElement("div");
+  globe.className = "form-group";
+  globe.innerHTML = `
     <label>Глобус</label>
     <div class="form-fields"><select name="flags.${MODULE}.manifest">${options}</select></div>
     <p class="hint">Сцена рендерится как глобус выбранного мира.</p>`;
-  basics.append(group);
+  const backdrop = document.createElement("div");
+  backdrop.className = "form-group";
+  backdrop.innerHTML = `
+    <label>Задник глобуса</label>
+    <div class="form-fields">
+      <input type="text" name="flags.${MODULE}.backdrop" value="${flags.backdrop ?? ""}"
+             placeholder="CSS-фон: url(...) center/cover или градиент">
+    </div>
+    <p class="hint">Что видно вокруг сферы. Пусто — космос по умолчанию.</p>`;
+  basics.append(globe, backdrop);
 }
