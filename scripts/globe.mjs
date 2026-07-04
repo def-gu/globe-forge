@@ -38,7 +38,10 @@ export async function activateGlobe(scene) {
   const el = document.createElement("div");
   el.id = "globe-forge-canvas";
   const backdrop = flags.backdrop || manifest.backdrop;
-  if (backdrop) el.style.background = backdrop;
+  if (backdrop) {
+    el.style.background = backdrop;
+    el.classList.add("gf-custom-backdrop");
+  }
   document.body.append(el);
   canvas.app.ticker.stop();
 
@@ -54,6 +57,7 @@ export async function activateGlobe(scene) {
     pitchWithRotate: false,
     dragRotate: false,
     touchPitch: false,
+    minZoom: 1.1,
     center: view.center,
     zoom: view.zoom
   });
