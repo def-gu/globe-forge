@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Clicking a location on the globe shows its description with PathfinderWiki links.
 - Interface translations in English and Russian.
 - World manifests can name a globe in several languages.
 
