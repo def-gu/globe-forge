@@ -1,4 +1,4 @@
-import { scenePxToLonLat } from "./geo.mjs";
+import { lonLatToScenePx, scenePxToLonLat, wrapLon } from "./geo.mjs";
 
 const SOURCE = "gf-tokens";
 const LAYER = "gf-tokens";
@@ -105,6 +105,34 @@ export function attachTokens(map, scene, sceneSize) {
   if (map.isStyleLoaded()) setup();
   else map.once("load", setup);
 
+  const container = map.getContainer();
+  const canPlace = () => game.user.can("TOKEN_CREATE");
+  const onDragOver = (ev) => {
+    if (canPlace()) ev.preventDefault();
+  };
+  const onDrop = async (ev) => {
+    if (!canPlace()) return;
+    const TextEditor = foundry.applications.ux.TextEditor.implementation;
+    const data = TextEditor.getDragEventData(ev);
+    if (data?.type !== "Actor") return;
+    ev.preventDefault();
+    ev.stopPropagation();
+    let actor = await getDocumentClass("Actor").fromDropData(data);
+    if (actor?.pack) actor = await game.actors.importFromCompendium(game.packs.get(actor.pack), actor.id);
+    if (!actor?.isOwner) return;
+    const rect = container.getBoundingClientRect();
+    const lngLat = map.unproject([ev.clientX - rect.left, ev.clientY - rect.top]);
+    const px = lonLatToScenePx({ lon: wrapLon(lngLat.lng), lat: lngLat.lat }, sceneSize);
+    const { w, h } = footprintPx(actor.prototypeToken, scene.grid.size);
+    const tokenDoc = await actor.getTokenDocument({
+      x: Math.round(px.x - w / 2),
+      y: Math.round(px.y - h / 2)
+    });
+    await scene.createEmbeddedDocuments("Token", [tokenDoc.toObject()]);
+  };
+  container.addEventListener("dragover", onDragOver);
+  container.addEventListener("drop", onDrop);
+
   const hooks = ["createToken", "updateToken", "deleteToken"].map((hook) => [
     hook,
     Hooks.on(hook, (doc) => {
@@ -114,6 +142,8 @@ export function attachTokens(map, scene, sceneSize) {
 
   return () => {
     disposed = true;
+    container.removeEventListener("dragover", onDragOver);
+    container.removeEventListener("drop", onDrop);
     for (const [hook, id] of hooks) Hooks.off(hook, id);
   };
 }
