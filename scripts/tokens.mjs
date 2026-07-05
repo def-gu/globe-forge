@@ -1,7 +1,8 @@
 import { lonLatToScenePx, scenePxToLonLat, wrapLon } from "./geo.mjs";
 
 const SOURCE = "gf-tokens";
-const LAYER = "gf-tokens";
+export const TOKEN_LAYER = "gf-tokens";
+const LAYER = TOKEN_LAYER;
 const RING = "gf-token-rings";
 const FALLBACK = "gf-token-fallback";
 const FALLBACK_SIZE = 64;
