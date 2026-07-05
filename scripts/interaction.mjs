@@ -2,6 +2,7 @@ import * as maplibregl from "../lib/maplibre-gl.mjs";
 import { createTextIndex } from "./popups.mjs";
 import { lonLatToScenePx, wrapLon } from "./geo.mjs";
 import { canCreateJournalPin, createJournalPin, findAnchoredNote, openNote } from "./notes.mjs";
+import { TOKEN_LAYER } from "./tokens.mjs";
 
 export function attachLocationPopups(map, { url, slices, layers, scene, sceneSize }) {
   const index = createTextIndex({ url, slices });
@@ -10,6 +11,9 @@ export function attachLocationPopups(map, { url, slices, layers, scene, sceneSiz
   const clickable = (features) => features?.find((f) => f.properties?.fid !== undefined);
 
   const onClick = async (e) => {
+    // A token above the location owns the click.
+    if (map.getLayer(TOKEN_LAYER) && map.queryRenderedFeatures(e.point, { layers: [TOKEN_LAYER] }).length)
+      return;
     const feature = clickable(e.features);
     if (!feature) return;
     let text;
