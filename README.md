@@ -11,6 +11,7 @@ A [Foundry VTT](https://foundryvtt.com/) v13 module: interactive globes of game 
 - Click a location to read what it is and jump to its PathfinderWiki article.
 - The location card can open the journal pinned there or create a new one in one click.
 - Drag a journal onto the globe to anchor it to a place. The place card opens it.
+- Drop an actor onto the globe to place its token. Tokens keep their ground size at any zoom.
 - Play offline by putting the map file into your Foundry data folder.
 - Replace the space around the sphere with your own backdrop in the scene configuration.
 
