@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tokens on the scene appear on the globe and follow its updates.
 - Dropping an actor onto the globe places its token there.
 - Hidden tokens are shown only to the GM.
+- Tokens can be dragged to a new place on the globe.
 
 ## [0.3.0] - 2026-07-05
 
