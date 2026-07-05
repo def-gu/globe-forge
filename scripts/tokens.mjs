@@ -2,6 +2,7 @@ import { lonLatToScenePx, scenePxToLonLat, wrapLon } from "./geo.mjs";
 
 const SOURCE = "gf-tokens";
 const LAYER = "gf-tokens";
+const RING = "gf-token-rings";
 const FALLBACK = "gf-token-fallback";
 const FALLBACK_SIZE = 64;
 
@@ -64,7 +65,14 @@ export function attachTokens(map, scene, sceneSize) {
       features.push({
         type: "Feature",
         geometry: { type: "Point", coordinates: [lon, lat] },
-        properties: { id: token.id, image: image.id, scale: w / image.width }
+        properties: {
+          id: token.id,
+          image: image.id,
+          scale: w / image.width,
+          radius: (w / 2) * 1.15,
+          selected: token.object?.controlled ?? false,
+          targeted: token.object?.isTargeted ?? false
+        }
       });
     }
     collection = { type: "FeatureCollection", features };
@@ -107,6 +115,27 @@ export function attachTokens(map, scene, sceneSize) {
     map.addSource(SOURCE, {
       type: "geojson",
       data: { type: "FeatureCollection", features: [] }
+    });
+    map.addLayer({
+      id: RING,
+      type: "circle",
+      source: SOURCE,
+      filter: ["any", ["get", "selected"], ["get", "targeted"]],
+      paint: {
+        "circle-pitch-alignment": "map",
+        "circle-color": "rgba(0, 0, 0, 0)",
+        "circle-stroke-width": 2,
+        "circle-stroke-color": ["case", ["get", "targeted"], "#cc3333", "#ff9829"],
+        "circle-radius": [
+          "interpolate",
+          ["exponential", 2],
+          ["zoom"],
+          0,
+          ["*", ["get", "radius"], k0],
+          22,
+          ["*", ["get", "radius"], k0 * 2 ** 22]
+        ]
+      }
     });
     map.addLayer({
       id: LAYER,
