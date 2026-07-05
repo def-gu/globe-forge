@@ -31,6 +31,7 @@ export function attachTokens(map, scene, sceneSize) {
   const images = new Map();
   let disposed = false;
   let generation = 0;
+  let collection = { type: "FeatureCollection", features: [] };
 
   async function imageFor(token) {
     const src = token.texture?.src;
@@ -66,8 +67,35 @@ export function attachTokens(map, scene, sceneSize) {
         properties: { id: token.id, image: image.id, scale: w / image.width }
       });
     }
-    map.getSource(SOURCE)?.setData({ type: "FeatureCollection", features });
+    collection = { type: "FeatureCollection", features };
+    map.getSource(SOURCE)?.setData(collection);
   }
+
+  // While the pointer moves only the feature follows it; the document is
+  // written once on release, so other clients see a single move.
+  const onDragStart = (e) => {
+    const feature = e.features?.[0];
+    const token = feature && scene.tokens.get(feature.properties.id);
+    if (!token?.isOwner) return;
+    e.preventDefault();
+    map.getCanvas().style.cursor = "grabbing";
+    const moved = collection.features.find((f) => f.properties.id === token.id);
+    const onMove = (ev) => {
+      if (!moved) return;
+      moved.geometry.coordinates = [ev.lngLat.lng, ev.lngLat.lat];
+      map.getSource(SOURCE)?.setData(collection);
+    };
+    const onUp = async (ev) => {
+      map.off("mousemove", onMove);
+      map.getCanvas().style.cursor = "";
+      const px = lonLatToScenePx({ lon: wrapLon(ev.lngLat.lng), lat: ev.lngLat.lat }, sceneSize);
+      const { w, h } = footprintPx(token, scene.grid.size);
+      await token.update({ x: Math.round(px.x - w / 2), y: Math.round(px.y - h / 2) });
+    };
+    map.on("mousemove", onMove);
+    map.once("mouseup", onUp);
+  };
+  map.on("mousedown", LAYER, onDragStart);
 
   // Ground-fixed size: scale converts the image to scene pixels, and the zoom
   // expression converts scene pixels to screen pixels (the mercator world is
