@@ -105,7 +105,15 @@ export function attachTokens(map, scene, sceneSize) {
   if (map.isStyleLoaded()) setup();
   else map.once("load", setup);
 
+  const hooks = ["createToken", "updateToken", "deleteToken"].map((hook) => [
+    hook,
+    Hooks.on(hook, (doc) => {
+      if (doc.parent?.id === scene.id) refresh();
+    })
+  ]);
+
   return () => {
     disposed = true;
+    for (const [hook, id] of hooks) Hooks.off(hook, id);
   };
 }
