@@ -13,6 +13,7 @@ A [Foundry VTT](https://foundryvtt.com/) v13 module: interactive globes of game 
 - Drag a journal onto the globe to anchor it to a place. The place card opens it.
 - Drop an actor onto the globe to place its token. Tokens keep their ground size at any zoom.
 - Move your tokens by dragging them across the globe.
+- Click a token to select it, Alt-click to target, double-click to open its sheet.
 - Play offline by putting the map file into your Foundry data folder.
 - Replace the space around the sphere with your own backdrop in the scene configuration.
 

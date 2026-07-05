@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dropping an actor onto the globe places its token there.
 - Hidden tokens are shown only to the GM.
 - Tokens can be dragged to a new place on the globe.
+- A click selects a token and Alt-click targets it.
+- A double click opens the token's character sheet.
 
 ## [0.3.0] - 2026-07-05
 
