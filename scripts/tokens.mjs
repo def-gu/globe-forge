@@ -133,6 +133,31 @@ export function attachTokens(map, scene, sceneSize) {
   if (map.isStyleLoaded()) setup();
   else map.once("load", setup);
 
+  // The PIXI canvas below the globe still holds the Token placeables, so
+  // selection and targeting go through the regular Foundry mechanisms.
+  const onTokenClick = (e) => {
+    const feature = e.features?.[0];
+    const token = feature && scene.tokens.get(feature.properties.id);
+    const placeable = token?.object;
+    if (!placeable) return;
+    if (e.originalEvent.altKey) {
+      placeable.setTarget(!placeable.isTargeted, { releaseOthers: false });
+    } else if (token.isOwner) {
+      placeable.control({ releaseOthers: !e.originalEvent.shiftKey });
+    }
+  };
+  const onTokenDblClick = (e) => {
+    const feature = e.features?.[0];
+    const token = feature && scene.tokens.get(feature.properties.id);
+    if (!token?.actor?.testUserPermission(game.user, "OBSERVER")) return;
+    e.preventDefault();
+    token.actor.sheet.render(true);
+  };
+  map.on("click", LAYER, onTokenClick);
+  map.on("dblclick", LAYER, onTokenDblClick);
+  map.on("mouseenter", LAYER, () => (map.getCanvas().style.cursor = "pointer"));
+  map.on("mouseleave", LAYER, () => (map.getCanvas().style.cursor = ""));
+
   const container = map.getContainer();
   const canPlace = () => game.user.can("TOKEN_CREATE");
   const onDragOver = (ev) => {
@@ -165,6 +190,18 @@ export function attachTokens(map, scene, sceneSize) {
     hook,
     Hooks.on(hook, (doc) => {
       if (doc.parent?.id === scene.id) refresh();
+    })
+  ]);
+  hooks.push([
+    "controlToken",
+    Hooks.on("controlToken", (placeable) => {
+      if (placeable.document.parent?.id === scene.id) refresh();
+    })
+  ]);
+  hooks.push([
+    "targetToken",
+    Hooks.on("targetToken", (user, placeable) => {
+      if (placeable.document.parent?.id === scene.id) refresh();
     })
   ]);
 
