@@ -4,6 +4,7 @@ import { firstReachable } from "./sources.mjs";
 import { getManifest, manifestsReady } from "./manifests.mjs";
 import { attachLocationPopups } from "./interaction.mjs";
 import { attachNotes } from "./notes.mjs";
+import { attachTokens } from "./tokens.mjs";
 import { wrapLon } from "./geo.mjs";
 
 const MODULE = "globe-forge";
@@ -94,13 +95,15 @@ export async function activateGlobe(scene) {
   }
 
   const detachNotes = attachNotes(map, scene, SCENE_SIZE);
+  const detachTokens = attachTokens(map, scene, SCENE_SIZE);
 
-  active = { map, el, sceneId: scene.id, detachNotes };
+  active = { map, el, sceneId: scene.id, detachNotes, detachTokens };
 }
 
 export function deactivateGlobe() {
   if (active) {
     active.detachNotes();
+    active.detachTokens();
     active.map.remove();
     active.el.remove();
     active = null;
